@@ -1,0 +1,41 @@
+Conectar a MongoDB Atlas: 
+
+'mongodb+srv://coderhouse:coderhouse@cluster0.6zhqh8c.mongodb.net/?retryWrites=true&w=majority'
+
+user coderhouse
+
+password coderhouse
+
+//////////////////////////////////////////////////////////////////
+
+Conectar a Firebase 
+
+archivo en root/db/fir-backend-48ddf-firebase-adminsdk-rk3wp-be7aa373ee.json
+
+{
+  "type": "service_account",
+  "project_id": "fir-backend-48ddf",
+  "private_key_id": "be7aa373ee5b81af5bdfd1d0eb91adf5536c9291",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQD0b3zpCVljPTms\nsfERYnRQDM/MK42fTJbVC6U+RTHDMPJ+GhJlq1qMbM310NTDEovOfgFlWV+kHFza\nA01wc1Df9xxJcmLIXRtofDEi/mKOO4SX98xtCnMq+79mZPndwBme0XtvZJ/9unIX\ncY+bag9LYVUWKALu8SU+5rpxPQMhzrRHsnYOFJv5oOxlpm8jefRaDNvVu3vedKtZ\nFFfZfoXSMiEKQcCqb79UybbjnG6kMZJG15YeZtXuyP+NffuwNuWKlOtp1sQFYYRk\nXsIOL45Je/pANMlxBtq+N+ITiljHYpxGRmwvnfTj3kM06lEh1/iMrdAee4i+KW66\nvtPqMpyLAgMBAAECggEAKGFEjtDLEgBax0MsElWj5ld/eniVcEP8RNykIynWIysy\nXA+di2snzbvpuFqT01f8fZPGUkJV8Ov4kNFr2RBLw3v0kdOSKwxqizO9AE1q5ZlC\necJnZHoN9YNaJqW2u2HRObHchNXoMke7MlFByohWV3sQTdU1StjOcNo34Z4VJt/G\nsPlYExaaTMBU8Uz4gN9z+dNuRTspw6/wv16+xEOorHay+bsZX+nL+u7EOHRdLI4Y\nAXusnzWZ3nn+19NrCg5oxfN45KTPm8G2C+e2bQB2a5m/sdluW0WisALJ9LGjtQUm\nNKu/V3tsiAHPQ8DrovCCxe7GZaHRP/hiHn1QHzYwHQKBgQD/L+E2oyjQyjaf0LMH\nnk4D+T612oAVVYRDwODVcHkYdyRrJnZmpG2iqMWH+gzTQrHuCM7AYeukI6ZOU0I9\nYMBwrKHUGd/wrAfd0gvzSSa+9/ey0D+P4fTftJc6ueX5MDaByLhBF3loxgfFIlVs\nk9cgQCmUb34pkNNCdoVt3kFTnwKBgQD1Ntb0/pWMd+71a7P0sEpi6UdOe4wCPssO\nzzmSQKvuAkppEQ/u96OyglvPfy1SFMYasY0eQqQ91tHXE50hn3UQwSSxCsKfLFhL\nss53gAz/ORxBNFINjKiXvvR9gnDB2KyZwXqKyHBOywjQ3c/YFbzk3i9EMr0I4BhH\nOcAzNTVvlQKBgF9A8REjACZHhPJMxbcPSVHEZLse73aHMFLWGVayoBEYz/hLKCES\nOXZhBzLFjKoDGEWg9gPryTjAseBExdIBXnPwjIuOiP/eRyVutVU/tf3Ms6IEh+Ve\nU7h5QYYDRCuq6n2xfc2WRJRubxIPydE4sjFwodStdWtwitshQJcNQldDAoGARUxn\nOTuNVfI69N6oL7l2fDeC8FoX+jZ2ukuz8HIYZJ3/G2w3/Ye8mmEewygkzbKTPc35\nnJimw9cm3EptuKfQtJhw3xu0XrlwhowUr07f3WztYDwCCFQ8/Q15GNM5PH8YYCd+\nkyQMIShd6HEXIPEbve5Qm0xfgdea5N4cRByAanUCgYAIJ8aalO5M/RBSKeIiiGnz\nQpUTcouxBsmZd3AEc9SudjggAYsNt8jVueSI7hoQ5Z79VwcXwiBqbV8XkG/DGQmq\n2G7xPDXoMVnmbamR6/amuSD2PGJi5siwUSae//9lLl9ZSfSwRIK/iWcvv/eDI63y\nVdWF8zfEUxUuxxYzvdGuxw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-rk3wp@fir-backend-48ddf.iam.gserviceaccount.com",
+  "client_id": "114466383106282536648",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-rk3wp%40fir-backend-48ddf.iam.gserviceaccount.com"
+}
+
+connection en root/firebaseInit/firebase.js
+
+import admin from 'firebase-admin'
+
+import serviceAccount from './../db/fir-backend-48ddf-firebase-adminsdk-rk3wp-be7aa373ee.json' assert { type: "json" };
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://firebase-adminsdk-rk3wp@fir-backend-48ddf.iam.gserviceaccount.com'
+    });
+
+const connection = admin.firestore()
+
+export const db = connection
