@@ -26,6 +26,7 @@ const regexEmail = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+
 
 document.querySelector('#enviarMensaje').addEventListener('click', (e) => {
   e.preventDefault()
+
   if (email.value !== '' && regexEmail.test(email.value)) {
     socket.emit('mimensaje', {
       email: email.value,

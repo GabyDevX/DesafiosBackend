@@ -8,11 +8,18 @@ class ProductosRouter extends express.Router {
         const apiProductos = new ApiProductosMock()
 
         this.get('/productos-test', async (req, res, next) => {
+            
             try {
+                req.session.usuario = req.query.nameLogin;
+
                 const productosFaker = await apiProductos.popular()
-                res.render("inicio", {
+                
+                const data = {
                     productos: productosFaker,
-                    })
+                    nameLogin: req.session.usuario
+                };
+                
+                res.render("inicio", data)
             } catch (error) {
                 next(error)
             }
