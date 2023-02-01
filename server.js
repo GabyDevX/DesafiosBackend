@@ -15,9 +15,16 @@ import { User } from "./models/usuario.js"
 import mongoose from "mongoose";
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv'
+import parseArgs from 'minimist'
+import { fork } from 'child_process'
 
-const MONGO_DB_URI =
-	"mongodb+srv://coderhouse:coderhouse@cluster0.6zhqh8c.mongodb.net/?retryWrites=true&w=majority"
+const args = parseArgs(process.argv.slice(2));
+//FLAG -p
+const PORT = args.p || 8080;
+
+dotenv.config();
+const MONGO_DB_URI = process.env.URL_MONGO
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -128,8 +135,8 @@ app.set('views', './public/views')
 
 
 
-const mensajeDB = new MongoDB('mongodb+srv://coderhouse:coderhouse@cluster0.6zhqh8c.mongodb.net/?retryWrites=true&w=majority', 'mensajes')
-const usuarioDB = new MongoDB('mongodb+srv://coderhouse:coderhouse@cluster0.6zhqh8c.mongodb.net/?retryWrites=true&w=majority', 'usuarios')
+const mensajeDB = new MongoDB(MONGO_DB_URI, 'mensajes')
+const usuarioDB = new MongoDB(MONGO_DB_URI, 'usuarios')
 
 let productos
 let mensajes
@@ -226,27 +233,6 @@ app.get('/datos', requireAuthentication, async (req, res) => {
     })
   })
 
-// app.post(`/submit`, (req, res) => {
-//     req.session.usuario = req.body.nameLogin;
-//     res.redirect('/api/productos-test');
-// });
-
-// app.get(`/loginSession`, (req, res) => {
-//     res.render("loginSession");
-//     req.session.destroy(err => {
-//         if (!err) {
-//             console.log(`ok`)
-//         } else {
-//             console.log(`error ${err}`)
-//         }
-//     });
-// });
-
-
-// app.post(`/keepSession`, validateSession, (req, res) => {
-//     console.log('sigo');
-// });
-
 app.get(`/logout`, requireAuthentication, (req, res) => {
     let userLogout = req.session.usuario;
     req.session.destroy(err => {
@@ -262,16 +248,6 @@ app.get(`/logout`, requireAuthentication, (req, res) => {
 app.get('/', (req, res) => {
     res.redirect('/datos')
 })
-
-// function validateSession(req, res, next) {
-//     if (req.session.usuario) {
-//         next();
-//     } else {
-//         res.redirect('/loginSession');
-//     }
-// }
-
-const PORT = 8080
 
 httpServer.listen(PORT, async () => {
   console.log('Servidor escuchando en el puerto ' + PORT)
@@ -290,7 +266,7 @@ httpServer.listen(PORT, async () => {
 import util from 'util'
 
 function print(objeto) {
-    //console.log(util.inspect(objeto,false,12,true))
+    console.log(util.inspect(objeto,false,12,true))
 }
 
 //NORMALIZAR
@@ -310,3 +286,31 @@ const normalizar = (data) => {
 
   return mensajesNorm
 }
+
+app.get('/info', (req, res) => {
+    const data = {
+        directorioActual: process.cwd(),
+        idProceso: process.pid,
+        vNode: process.version,
+        rutaEjecutable: process.execPath,
+        sistemaOperativo: process.platform,
+        memoria: JSON.stringify(process.memoryUsage().rss, null, 2),
+    }
+
+    res.render('info', data);
+});
+
+app.get(`/api/randoms`, (req, res) => {
+    res.render(`objectRandomIN`)
+});
+
+app.post(`/api/randoms`, (req, res) => {
+    const { cantBucle } = req.body;
+    process.env.CANT_BUCLE = cantBucle;
+
+    const objectRandom = fork(`./controller/getObjectRandom`);
+    objectRandom.on(`message`, dataRandom => {
+        return res.send(dataRandom);
+    })
+});
+
