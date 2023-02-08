@@ -18,10 +18,14 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv'
 import parseArgs from 'minimist'
 import { fork } from 'child_process'
+import cluster from 'cluster'
+import numCPUs from 'os' 
 
 const args = parseArgs(process.argv.slice(2));
 //FLAG -p
-const PORT = args.p || 8080;
+
+
+
 
 dotenv.config();
 const MONGO_DB_URI = process.env.URL_MONGO
@@ -105,6 +109,41 @@ passport.deserializeUser((id, done) => {
 const app = express()
 const httpServer = new HttpServer(app)
 const io = new IOServer(httpServer)
+
+const FORK = args.FORK;
+const CLUSTER = args.CLUSTER;
+const numCPUsTotal = numCPUs.cpus().length;
+
+const PORT = parseInt(process.argv[2]) || 8080
+// const runServer = (PORT) => {
+//     httpServer.listen(PORT, () => console.log(`Servidor escuchando el puerto ${PORT}`));
+// }
+
+if (cluster.isMaster) {
+    console.log(numCPUs)
+    console.log(`PID number: ${process.pid}`)
+
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork()
+    }
+
+    cluster.on('exit', worker => {
+        console.log(`Worker ${worker.process.pid} died: ${new Date().toString()}`)
+        cluster.fork()
+    })
+} else {
+    const app = express()
+
+    const PORT = parseInt(process.argv[2]) || 8080
+
+    app.get('/', (req, res) => {
+        res.send(`Servidor express en ${PORT} - <b> PID: ${process.pid}</b> - ${new Date().toLocaleString()}`)
+    })
+
+    app.listen(PORT, () => {
+        console.log(`Servidor escuchando en el puerto ${PORT} - PID: ${process.pid}`);
+    })
+}
 
 const advancedOptions = {useNewUrlParser: true, useUnifiedTopology: true}
 
@@ -294,6 +333,7 @@ app.get('/info', (req, res) => {
         vNode: process.version,
         rutaEjecutable: process.execPath,
         sistemaOperativo: process.platform,
+        cantProcesadores: numCPUs,
         memoria: JSON.stringify(process.memoryUsage().rss, null, 2),
     }
 
