@@ -21,7 +21,8 @@ import { fork } from 'child_process'
 import cluster from 'cluster'
 import numCPUs from 'os' 
 import compression from 'compression'
-import logger from './logger.js'
+import logger from './logger/logger.js'
+//artillery quick --count 50 -n 40 http://localhost:8081?cantBucle=100000 > result fork.txt
 
 const loggerConsole = logger.getLogger(`default`);
 const loggerArchiveWarn = logger.getLogger(`warnArchive`);
