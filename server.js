@@ -20,12 +20,15 @@ import parseArgs from 'minimist'
 import { fork } from 'child_process'
 import cluster from 'cluster'
 import numCPUs from 'os' 
+import compression from 'compression'
+import logger from './logger.js'
+
+const loggerConsole = logger.getLogger(`default`);
+const loggerArchiveWarn = logger.getLogger(`warnArchive`);
+const loggerArchiveError = logger.getLogger(`errorArchive`);
 
 const args = parseArgs(process.argv.slice(2));
 //FLAG -p
-
-
-
 
 dotenv.config();
 const MONGO_DB_URI = process.env.URL_MONGO
@@ -141,7 +144,7 @@ if (cluster.isMaster) {
     })
 
     app.listen(PORT, () => {
-        console.log(`Servidor escuchando en el puerto ${PORT} - PID: ${process.pid}`);
+        loggerConsole.debug(`Servidor escuchando el puerto ${PORT} - PID: ${process.pid}`);
     })
 }
 
@@ -150,6 +153,7 @@ const advancedOptions = {useNewUrlParser: true, useUnifiedTopology: true}
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(compression())
 // app.use('/api', new ProductosRouter())
 app.use(cookieParser())
 app.use(session({
@@ -172,7 +176,24 @@ app.use(passport.session())
 app.set('view engine', 'ejs')
 app.set('views', './public/views')
 
+app.use((req, res, next) => {
+    loggerConsole.info(`
+    Ruta consultada: ${req.originalUrl}
+    Metodo ${req.method}`);
+    next();
+});
 
+app.use((req, res, next) => {
+    loggerConsole.warn(`
+    Estado: 404
+    Ruta consultada: ${req.originalUrl}
+    Metodo ${req.method}`);
+
+    loggerArchiveWarn.warn(`Estado: 404, Ruta consultada: ${req.originalUrl}, Metodo ${req.method}`);
+
+    res.status(404).json({ error: -2, descripcion: `ruta ${req.originalUrl} metodo ${req.method} no implementada` });
+    next();
+});
 
 const mensajeDB = new MongoDB(MONGO_DB_URI, 'mensajes')
 const usuarioDB = new MongoDB(MONGO_DB_URI, 'usuarios')
@@ -183,8 +204,12 @@ let mensajes
 io.on('connection', async (socket) => {
   console.log('Un nuevo cliente se ha conectado')
 
-  const mensajesBD = await mensajeDB.getAll()
-
+  try {
+    const mensajesBD = await mensajeDB.getAll()
+  } catch (err) {
+    loggerConsole.error(`Error ${err}`)
+    loggerArchiveError.error(`Error ${err}`)
+  }
   const chat = {
     id: 'mensajes',
     mensajes: mensajesBD
@@ -192,38 +217,43 @@ io.on('connection', async (socket) => {
 
   const normalized = normalizar(chat)
 
-  socket.emit('mensajes', normalized)
+  
+ try {
+    socket.emit('mensajes', normalized)
 
-  socket.on('mimensaje', async (data) => {
-    
-    const nuevoMensaje = {
-      id: socket.id,
-      author: {
-          id: data.email,
-          nombre: data.nombre,
-          apellido: data.apellido,
-          edad: data.edad,
-          alias: data.alias,
-          avatar: data.avatar,
-      },
-      text: data.mensaje,
-      fyh: data.fyh
+    socket.on('mimensaje', async (data) => {
+      
+      const nuevoMensaje = {
+        id: socket.id,
+        author: {
+            id: data.email,
+            nombre: data.nombre,
+            apellido: data.apellido,
+            edad: data.edad,
+            alias: data.alias,
+            avatar: data.avatar,
+        },
+        text: data.mensaje,
+        fyh: data.fyh
+        }
+
+      await mensajeDB.save(nuevoMensaje);
+
+      let msjs = await mensajeDB.getAll()
+
+      let normalizrReload = {
+        id: 'mensajes',
+        mensajes: msjs
       }
+      
+      let newChat = normalizar(normalizrReload)
 
-    await mensajeDB.save(nuevoMensaje);
-
-    let msjs = await mensajeDB.getAll()
-
-    let normalizrReload = {
-      id: 'mensajes',
-      mensajes: msjs
-    }
-    
-    let newChat = normalizar(normalizrReload)
-
-    io.sockets.emit("mensajes", newChat);
-  })
-
+      io.sockets.emit("mensajes", newChat);
+    })
+  } catch (err) {
+    loggerConsole.error(`Error ${err}`)
+    loggerArchiveError.error(`Error ${err}`)
+  }
 })
 
 app.get('/register', (req, res) => {
@@ -327,6 +357,7 @@ const normalizar = (data) => {
 }
 
 app.get('/info', (req, res) => {
+    const numCPUs = require(`os`).cpus().length;
     const data = {
         directorioActual: process.cwd(),
         idProceso: process.pid,
@@ -336,8 +367,7 @@ app.get('/info', (req, res) => {
         cantProcesadores: numCPUs,
         memoria: JSON.stringify(process.memoryUsage().rss, null, 2),
     }
-
-    res.render('info', data);
+    return res.render('info', data);
 });
 
 app.get(`/api/randoms`, (req, res) => {
