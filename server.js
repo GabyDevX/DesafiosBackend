@@ -184,18 +184,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use((req, res, next) => {
-    loggerConsole.warn(`
-    Estado: 404
-    Ruta consultada: ${req.originalUrl}
-    Metodo ${req.method}`);
-
-    loggerArchiveWarn.warn(`Estado: 404, Ruta consultada: ${req.originalUrl}, Metodo ${req.method}`);
-
-    res.status(404).json({ error: -2, descripcion: `ruta ${req.originalUrl} metodo ${req.method} no implementada` });
-    next();
-});
-
 const mensajeDB = new MongoDB(MONGO_DB_URI, 'mensajes')
 const usuarioDB = new MongoDB(MONGO_DB_URI, 'usuarios')
 
@@ -358,16 +346,16 @@ const normalizar = (data) => {
 }
 
 app.get('/info', (req, res) => {
-    const numCPUs = require(`os`).cpus().length;
     const data = {
         directorioActual: process.cwd(),
         idProceso: process.pid,
         vNode: process.version,
         rutaEjecutable: process.execPath,
         sistemaOperativo: process.platform,
-        cantProcesadores: numCPUs,
+        cantProcesadores: numCPUs.cpus().length,
         memoria: JSON.stringify(process.memoryUsage().rss, null, 2),
     }
+    console.log(data)
     return res.render('info', data);
 });
 
@@ -383,5 +371,17 @@ app.post(`/api/randoms`, (req, res) => {
     objectRandom.on(`message`, dataRandom => {
         return res.send(dataRandom);
     })
+});
+
+app.use((req, res, next) => {
+  loggerConsole.warn(`
+  Estado: 404
+  Ruta consultada: ${req.originalUrl}
+  Metodo ${req.method}`);
+
+  loggerArchiveWarn.warn(`Estado: 404, Ruta consultada: ${req.originalUrl}, Metodo ${req.method}`);
+
+  res.status(404).json({ error: -2, descripcion: `ruta ${req.originalUrl} metodo ${req.method} no implementada` });
+  next();
 });
 
