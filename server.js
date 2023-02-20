@@ -193,8 +193,9 @@ let mensajes
 io.on('connection', async (socket) => {
   console.log('Un nuevo cliente se ha conectado')
 
+  let mensajesBD
   try {
-    const mensajesBD = await mensajeDB.getAll()
+    mensajesBD = await mensajeDB.getAll()
   } catch (err) {
     loggerConsole.error(`Error ${err}`)
     loggerArchiveError.error(`Error ${err}`)
