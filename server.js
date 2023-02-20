@@ -118,7 +118,8 @@ const FORK = args.FORK;
 const CLUSTER = args.CLUSTER;
 const numCPUsTotal = numCPUs.cpus().length;
 
-const PORT = parseInt(process.argv[2]) || 8080
+const envPort = parseInt(process.argv[2]) || 8080
+const PORT = process.env.PORT || envPort
 // const runServer = (PORT) => {
 //     httpServer.listen(PORT, () => console.log(`Servidor escuchando el puerto ${PORT}`));
 // }
@@ -138,7 +139,8 @@ if (cluster.isMaster) {
 } else {
     const app = express()
 
-    const PORT = parseInt(process.argv[2]) || 8080
+    const envPort = parseInt(process.argv[2]) || 8080
+    const PORT = process.env.PORT || envPort
 
     app.get('/', (req, res) => {
         res.send(`Servidor express en ${PORT} - <b> PID: ${process.pid}</b> - ${new Date().toLocaleString()}`)
