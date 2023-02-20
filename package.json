@@ -5,8 +5,8 @@
   "type": "module",
   "main": "benchmark.js",
   "scripts": {
-    "test": "node benchmark.js",
-    "start": "0x server.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
