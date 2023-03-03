@@ -11,6 +11,11 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
   </head>
 
   <body>
@@ -80,17 +85,23 @@
             />
           </div>
 
-          <!-- poner prefijo -->
           <div class="form-group">
             <input
               id="phoneNumber"
+              type="tel"
               name="phoneNumber"
-              placeholder="phoneNumber"
               class="form-control"
-              type="number"
               required
             />
           </div>
+          <button
+            class="btn-success"
+            id="verifyNumber"
+            onclick="process(event)"
+          >
+            Verify
+          </button>
+          <div id="info" class="alert alert-info" style="display: none"></div>
 
           <!-- Avatar file -->
 
@@ -98,11 +109,12 @@
             <input
               class="btn btn-success my-3"
               type="submit"
+              id="submit"
               value="Register"
+              style="display: none"
             />
           </div>
         </form>
-
         <hr />
 
         <div class="text-left">
@@ -115,5 +127,38 @@
         </div>
       </div>
     </div>
+    <script>
+      const phoneInputField = document.querySelector("#phoneNumber");
+      const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+          "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+      });
+    </script>
+    <script>
+      const submit = document.querySelector("#submit");
+      const info = document.querySelector("#info");
+      info;
+
+      function process(event) {
+        event.preventDefault();
+        console.log("clicked");
+        const phoneNumber = phoneInput.getNumber();
+        console.log(phoneInput);
+        console.log(phoneNumber);
+        // phoneInputField.value = "1231";
+        phoneInputField.value = phoneNumber;
+
+        if (!phoneNumber.includes("+")) {
+          info.style.display = "";
+          info.innerText = "Please add a valid phone number";
+          submit.style.display = "none";
+        } else {
+          info.style.display = "none";
+          submit.style.display = "";
+        }
+
+        // fix this
+      }
+    </script>
   </body>
 </html>
