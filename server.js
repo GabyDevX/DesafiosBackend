@@ -22,11 +22,28 @@ import cluster from "cluster";
 import numCPUs from "os";
 import compression from "compression";
 import logger from "./logger/logger.js";
+import multer from "multer";
+import sanitize from "sanitize-filename";
+
 //artillery quick --count 50 -n 40 http://localhost:8081?cantBucle=100000 > result fork.txt
 
 const loggerConsole = logger.getLogger(`default`);
 const loggerArchiveWarn = logger.getLogger(`warnArchive`);
 const loggerArchiveError = logger.getLogger(`errorArchive`);
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/images"); // save uploaded files to this directory
+  },
+  filename: function (req, file, cb) {
+    const username = sanitize(req.body.username); // sanitize the value of the "username" field
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const fileExtension = path.extname(file.originalname);
+    cb(null, username + "-" + uniqueSuffix + fileExtension); // customize file name with username
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const args = parseArgs(process.argv.slice(2));
 //FLAG -p
@@ -48,7 +65,7 @@ passport.use(
       const { fullName } = req.body;
       const { age } = req.body;
       const { phoneNumber } = req.body;
-      const { urlAvatar } = req.body;
+      const filePath = path.join("/", req.file.path);
       const findOrCreateUser = function () {
         User.findOne({ username: username }, async function (err, user) {
           if (err) {
@@ -63,11 +80,10 @@ passport.use(
             newUser.username = username;
             newUser.password = createHash(password);
             newUser.address = address;
-            newUser.urlAvatar = urlAvatar;
             newUser.phoneNumber = phoneNumber;
             newUser.age = age;
             newUser.fullName = fullName;
-            newUser.urlAvatar = "Prueba";
+            newUser.urlAvatar = filePath;
             newUser = await newUser.save();
             done(null, newUser);
           }
@@ -173,7 +189,6 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(compression());
-// app.use('/api', new ProductosRouter())
 app.use(cookieParser());
 app.use(
   session({
@@ -270,6 +285,7 @@ app.get("/register", (req, res) => {
 
 app.post(
   "/register",
+  upload.single("image"),
   passport.authenticate("register", {
     failureRedirect: "/failregister",
     successRedirect: "/",

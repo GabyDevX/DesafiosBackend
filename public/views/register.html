@@ -29,12 +29,13 @@
           method="post"
           role="form"
           autocomplete="off"
+          enctype="multipart/form-data"
         >
           <div class="form-group">
             <input
-              id="nombre"
+              id="username"
               name="username"
-              placeholder="nombre"
+              placeholder="username"
               class="form-control"
               type="text"
               required
@@ -76,6 +77,16 @@
 
           <div class="form-group">
             <input
+              id="image"
+              class="form-control"
+              type="file"
+              name="image"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <input
               id="age"
               name="age"
               placeholder="age"
@@ -102,8 +113,6 @@
             Verify
           </button>
           <div id="info" class="alert alert-info" style="display: none"></div>
-
-          <!-- Avatar file -->
 
           <div class="form-group">
             <input
@@ -145,7 +154,6 @@
         const phoneNumber = phoneInput.getNumber();
         console.log(phoneInput);
         console.log(phoneNumber);
-        // phoneInputField.value = "1231";
         phoneInputField.value = phoneNumber;
 
         if (!phoneNumber.includes("+")) {
