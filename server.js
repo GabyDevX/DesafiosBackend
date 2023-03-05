@@ -24,27 +24,9 @@ import compression from "compression";
 import logger from "./logger/logger.js";
 import multer from "multer";
 import sanitize from "sanitize-filename";
-import { createTransport } from 'nodemailer'
+import { createTransport } from "nodemailer";
 import bodyParser from "body-parser";
 import twilio from "twilio";
-
-const accountSid = "ACc2506fc936f3cdad42ee0869c1e940b5";
-const authToken = '2305ac82382a511e3d42c67e2de15bbc';
-
-const client = twilio(accountSid, authToken)
-
-const TEST_MAIL = 'gabo.ramirez0811@gmail.com'
-const PASS = 'nhlaxgvcdovtziyf'
-const PHONENum = '+59896989892'
-
-const transporter = createTransport({
-  service: 'gmail',
-  port: 587,
-  auth: {
-    user: TEST_MAIL,
-    pass: PASS
-  }
-})
 
 //artillery quick --count 50 -n 40 http://localhost:8081?cantBucle=100000 > result fork.txt
 
@@ -71,6 +53,25 @@ const args = parseArgs(process.argv.slice(2));
 
 dotenv.config();
 const MONGO_DB_URI = process.env.URL_MONGO;
+
+const accountSid = "ACc2506fc936f3cdad42ee0869c1e940b5";
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+// const authToken = "fbda3bc5b78185c93f16fff20282011f";
+
+const client = twilio(accountSid, authToken);
+
+const TEST_MAIL = "gabo.ramirez0811@gmail.com";
+const PASS = "nhlaxgvcdovtziyf";
+const PHONENum = "+59896989892";
+
+const transporter = createTransport({
+  service: "gmail",
+  port: 587,
+  auth: {
+    user: TEST_MAIL,
+    pass: PASS,
+  },
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -108,22 +109,22 @@ passport.use(
             newUser = await newUser.save();
             done(null, newUser);
             let mailOptions = {
-              from: 'Servidor Nodejs',
-              to: 'gabrielramirezacosta@hotmail.com',
-              subject: 'nuevo registro',
+              from: "Servidor Nodejs",
+              to: "gabrielramirezacosta@hotmail.com",
+              subject: "nuevo registro",
               html: `<h1 style="color: blue;"> Nuevo Usuario Registrado</h1>
                      <p><strong>Username: </strong>${username}</p>
                      <p><strong>Full Name: </strong>${fullName}</p>
                      <p><strong>Age: </strong>${age}</p>
                      <p><strong>Address: </strong>${address}</p>
                      <p><strong>Phone Number: </strong>${phoneNumber}</p>
-                     `
-            }
+                     `,
+            };
             try {
-              const info = await transporter.sendMail(mailOptions)
-              console.log(info)
+              const info = await transporter.sendMail(mailOptions);
+              console.log(info);
             } catch (error) {
-              console.log(error)
+              console.log(error);
             }
           }
         });
@@ -224,10 +225,9 @@ if (cluster.isMaster) {
 
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
 
-
 app.use(express.static("public"));
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser());
@@ -265,7 +265,7 @@ app.use("/", routes);
 
 const mensajeDB = new MongoDB(MONGO_DB_URI, "mensajes");
 const usuarioDB = new MongoDB(MONGO_DB_URI, "usuarios");
-const carritoDB = new MongoDB(MONGO_DB_URI, "carrito")
+const carritoDB = new MongoDB(MONGO_DB_URI, "carrito");
 
 let productos;
 let mensajes;
@@ -389,35 +389,41 @@ app.get("/api/carrito/pedir/:id", requireAuthentication, async (req, res) => {
   // const cart = await carrito.getById(id)
   const cart = await carritoDB.getById(id);
   // const cart = await fb.getById(id)
-  console.log(cart)
+  console.log(cart);
   if (cart) {
     let mailOptions = {
-      from: 'Servidor Nodejs',
-      to: 'gabrielramirezacosta@hotmail.com',
-      subject: 'nuevo pedido de ' + usuario.username,
+      from: "Servidor Nodejs",
+      to: "gabrielramirezacosta@hotmail.com",
+      subject: "nuevo pedido de " + usuario.username,
       html: `<h1 style="color: blue;"> Pedido realizado: </h1>
              <p>${cart[0]}</p>
-             `
+             `,
       // ${cart[0].products.foreach(e => `<p>${'hola'}</p>`)}
-    }
+    };
     try {
-      const info = await transporter.sendMail(mailOptions)
-      
-      const message = await client.messages.create({
-        body: 'nuevo pedido de ' + usuario.username,
-        from: '+15674122870',
+      const info = await transporter.sendMail(mailOptions);
+
+      const sms = await client.messages.create({
+        body: "Su pedido ha sido recibido y se encuentra en proceso",
+        // body: 'nuevo pedido de ' + usuario.username,
+        from: "+15674122870",
         // to: usuario.phoneNumber,
-        to: PHONENum
-      })
+        to: PHONENum,
+      });
+      const whatsapp = await client.messages.create({
+        body: "nuevo pedido de " + usuario.username,
+        from: "whatsapp:+14155238886",
+        // to: usuario.phoneNumber,
+        to: "whatsapp:+59896989892",
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    res.send('Pedido en proceso, espere mensaje de confirmacion')
+    res.send("Pedido en proceso, espere mensaje de confirmacion");
   } else {
     res.status(404).json({ error: "cart not found" });
   }
-
-})
+});
 
 app.get(`/logout`, requireAuthentication, (req, res) => {
   let userLogout = req.session.usuario;
