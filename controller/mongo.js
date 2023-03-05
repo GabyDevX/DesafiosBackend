@@ -20,21 +20,21 @@ class Mongo {
     }
   }
 
-  async getById(id) {
+  async getById(id, type = this.type) {
     try {
       this.connect();
 
-      if (this.type == "producto") {
+      if (type == "producto") {
         const product = await modelProd.productos.find({ _id: id });
         return product;
-      } else if (this.type == "carrito") {
+      } else if (type == "carrito") {
         const cart = await modelCar.carritos.find({ _id: id });
         console.log(cart);
         return cart;
-      } else if (this.type == "mensajes") {
+      } else if (type == "mensajes") {
         const mensaje = await mensajesModel.mensajes.find({ _id: id });
         return mensaje;
-      } else if (this.type == "usuarios") {
+      } else if (type == "usuarios") {
         const usuario = await usuariosModel.usuarios.find({ _id: id });
         return usuario;
       }

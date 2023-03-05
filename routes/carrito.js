@@ -1,4 +1,19 @@
 import { Router } from "express";
+import { User } from "./../models/usuario.js";
+
+import { createTransport } from 'nodemailer'
+
+const TEST_MAIL = 'gabo.ramirez0811@gmail.com'
+const PASS = 'nhlaxgvcdovtziyf'
+
+const transporter = createTransport({
+  service: 'gmail',
+  port: 587,
+  auth: {
+    user: TEST_MAIL,
+    pass: PASS
+  }
+})
 
 // import {Container} from '../controller/contenedor.js'
 // const carrito = new Container('./files/carrito', ['timestamp', 'products'])
@@ -20,7 +35,8 @@ const router = Router();
 
 router.post("/", async (req, res) => {
   const { body } = req;
-
+  console.log(body)
+  //const cart = body;
   body.timestamp = new Date().toLocaleString();
   body.products = [];
   // const newCartId = await carrito.save(body)
@@ -73,13 +89,45 @@ router.post("/:id/productos/:id_prod", async (req, res) => {
 router.get("/:id/productos", async (req, res) => {
   const { id } = req.params;
   // const cart = await carrito.getById(id)
-  const cart = await db.getById(id);
+  const cart = await db.getById(id, 'carrito');
+  console.log(cart)
+  console.log(cart[0].products)
   // const cart = await fb.getById(id)
 
   cart
     ? res.status(200).json(cart.products)
     : res.status(404).json({ error: "cart not found" });
 });
+
+// // GET /api/carrito/pedir/:id
+// router.get("/pedir/:id", async (req, res) => {
+//   const usuario = await User.findOne({ username: req.user.username });
+//   const { id } = req.params;
+//   // const cart = await carrito.getById(id)
+//   const cart = await db.getById(id);
+//   // const cart = await fb.getById(id)
+
+//   if (cart) {
+//     let mailOptions = {
+//       from: 'Servidor Nodejs',
+//       to: 'gabrielramirezacosta@hotmail.com',
+//       subject: 'nuevo registro',
+//       html: `<h1 style="color: blue;"> Nuevo Usuario Registrado</h1>
+//              <p>${cart.products}</p>
+//              `
+//     }
+//     try {
+//       const info = await transporter.sendMail(mailOptions)
+//       console.log(info)
+//     } catch (error) {
+//       console.log(error)
+//     }
+//     res.send('Pedido en proceso, espere mensaje de confirmacion')
+//   } else {
+//     res.status(404).json({ error: "cart not found" });
+//   }
+
+// })
 
 // DELETE /api/carrito/:id/productos/:id_prod
 router.delete("/:id/productos/:id_prod", async (req, res) => {

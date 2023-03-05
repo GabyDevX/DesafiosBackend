@@ -49,8 +49,8 @@ router.get("/:id?", async (req, res) => {
 router.post("/", async (req, res, next) => {
   if (admin) {
     const { body } = req;
-
-    body.timestamp = new Date().toLocaleString();
+    console.log(body)
+    // body.timestamp = new Date().toLocaleString();
 
     // const newProductId = await contenedor.save(body)
     // const newProductId = await fb.save(body)
