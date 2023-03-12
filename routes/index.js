@@ -1,6 +1,6 @@
 import { Router } from "express";
 // Importar todos los routers;
-import authRouter from "./auth.js";
+import authRouter from "./midlewares/auth.js";
 import datosRouter from "./datos.js";
 import infoRouter from "./info.js";
 import loginRouter from "./login.js";

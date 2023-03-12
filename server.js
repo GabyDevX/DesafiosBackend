@@ -10,7 +10,7 @@ import routes from "./routes/index.js";
 import numCPUs from "os";
 import mongoose from "mongoose";
 import { normalizar } from "./utils/utils.js";
-import { MongoDB } from "./controller/mongo.js";
+import { MongoDB } from "./persistence/mongo.js";
 
 dotenv.config();
 

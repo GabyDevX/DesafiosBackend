@@ -1,0 +1,4 @@
+[2023-03-12T01:43:06.473] [WARN] warnArchive - Estado: 404, Ruta consultada: /favicon.ico, Metodo GET
+[2023-03-12T02:10:37.547] [WARN] warnArchive - Estado: 404, Ruta consultada: /randoms, Metodo GET
+[2023-03-12T02:10:42.541] [WARN] warnArchive - Estado: 404, Ruta consultada: /random, Metodo GET
+[2023-03-12T02:10:59.967] [WARN] warnArchive - Estado: 404, Ruta consultada: /api/random, Metodo GET

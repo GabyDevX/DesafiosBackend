@@ -1,5 +1,5 @@
 import { Router } from "express";
-// import { requireAuthentication } from "./midlewares/auth.js";
+import controller from "../controllers/logout.js";
 const router = Router();
 
 function requireAuthentication(req, res, next) {
@@ -12,16 +12,6 @@ function requireAuthentication(req, res, next) {
   }
 }
 
-router.get(`/logout`, requireAuthentication, (req, res) => {
-  let userLogout = req.session.usuario;
-  req.session.destroy((err) => {
-    if (!err) {
-      console.log(`ok`);
-    } else {
-      console.log(`error`);
-    }
-  });
-  res.render("logout", { userLogout, newRoute: "/login" });
-});
+router.get(`/logout`, requireAuthentication, controller.logout);
 
 export default router;
