@@ -8,18 +8,13 @@ import compression from "compression";
 import logger from "./logger/logger.js";
 import routes from "./routes/index.js";
 import numCPUs from "os";
-import mongoose from "mongoose";
-import { normalizar } from "./utils/utils.js";
-import { MongoDB } from "./persistence/mongo.js";
+import mongoConnect from "./services/mongoConnect.js";
+import ioController from "./controllers/ioController.js";
 
 dotenv.config();
 
-const MONGO_DB_URI = process.env.URL_MONGO;
-mongoose.set("strictQuery", true);
-
 const loggerConsole = logger.getLogger(`default`);
 const loggerArchiveWarn = logger.getLogger(`warnArchive`);
-const loggerArchiveError = logger.getLogger(`errorArchive`);
 
 const envPort = parseInt(process.argv[2]) || 8080;
 const PORT = process.env.PORT || envPort;
@@ -41,12 +36,6 @@ if (cluster.isMaster) {
 
   const envPort = parseInt(process.argv[2]) || 8080;
   const PORT = process.env.PORT || envPort;
-
-  app.get("/", (req, res) => {
-    if (!res.headersSent) {
-      res.redirect("/datos");
-    }
-  });
 
   app.listen(PORT, () => {
     loggerConsole.debug(
@@ -94,71 +83,12 @@ app.use((req, res, next) => {
   next();
 });
 
-//EXPORT TO FETCH DATABASE
-const mensajeDB = new MongoDB(MONGO_DB_URI, "mensajes");
-
-io.on("connection", async (socket) => {
-  console.log("Un nuevo cliente se ha conectado");
-
-  let mensajesBD;
-  try {
-    mensajesBD = await mensajeDB.getAll();
-  } catch (err) {
-    loggerConsole.error(`Error ${err}`);
-    loggerArchiveError.error(`Error ${err}`);
-  }
-  const chat = {
-    id: "mensajes",
-    mensajes: mensajesBD,
-  };
-
-  const normalized = normalizar(chat);
-
-  try {
-    socket.emit("mensajes", normalized);
-
-    socket.on("mimensaje", async (data) => {
-      const nuevoMensaje = {
-        id: socket.id,
-        author: {
-          id: data.email,
-          nombre: data.nombre,
-          apellido: data.apellido,
-          edad: data.edad,
-          alias: data.alias,
-          avatar: data.avatar,
-        },
-        text: data.mensaje,
-        fyh: data.fyh,
-      };
-
-      await mensajeDB.save(nuevoMensaje);
-
-      let msjs = await mensajeDB.getAll();
-
-      let normalizrReload = {
-        id: "mensajes",
-        mensajes: msjs,
-      };
-
-      let newChat = normalizar(normalizrReload);
-
-      io.sockets.emit("mensajes", newChat);
-    });
-  } catch (err) {
-    loggerConsole.error(`Error ${err}`);
-    loggerArchiveError.error(`Error ${err}`);
-  }
-});
+ioController.startChatServer(app, io);
 
 httpServer.listen(PORT, async () => {
   console.log("Servidor escuchando en el puerto " + PORT);
   try {
-    const mongo = await mongoose.connect(MONGO_DB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    console.log("Connected DB");
+    mongoConnect.connect();
   } catch (error) {
     console.log(`Error en conexión de Base de datos: ${error}`);
   }

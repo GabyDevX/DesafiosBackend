@@ -7,14 +7,12 @@ import loginRouter from "./login.js";
 import logoutRouter from "./logout.js";
 import randomsRouter from "./randoms.js";
 import registerRouter from "./register.js";
+//import index controller;
+import controller from "../controllers/index.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  if (!res.headersSent) {
-    res.redirect("/datos");
-  }
-});
+router.get("/", controller.index);
 
 router.use(authRouter);
 router.use("/", datosRouter);

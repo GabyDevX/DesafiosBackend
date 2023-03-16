@@ -1,5 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import passport from "passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,8 +19,13 @@ const login = (req, res) => {
   res.sendFile(loginPagePath);
 };
 
+const loginPost = passport.authenticate("login", {
+  failureRedirect: "/faillogin",
+  successRedirect: "/datos",
+});
+
 const faillogin = (req, res) => {
   res.render("login-error");
 };
 
-export default { login, faillogin };
+export default { login, faillogin, loginPost };

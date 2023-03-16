@@ -2,7 +2,7 @@ const logout = (req, res) => {
   let userLogout = req.session.usuario;
   req.session.destroy((err) => {
     if (!err) {
-      console.log(`ok`);
+      console.log(`logged out`);
     } else {
       console.log(`error`);
     }
