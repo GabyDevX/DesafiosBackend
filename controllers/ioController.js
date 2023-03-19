@@ -1,12 +1,8 @@
-import dotenv from "dotenv";
-import { MongoDB } from "../persistence/mongo.js";
+import MensajesFactory from "../persistence/Factories/MensajesDAOFactory.js";
 import { normalizar } from "../utils/utils.js";
 import logger from "../logger/logger.js";
 
-dotenv.config();
-const MONGO_DB_URI = process.env.URL_MONGO;
-
-const mensajeDB = new MongoDB(MONGO_DB_URI, "mensajes");
+const mensajeDB = MensajesFactory.getDao();
 
 const loggerArchiveError = logger.getLogger(`errorArchive`);
 

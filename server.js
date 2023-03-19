@@ -11,6 +11,13 @@ import numCPUs from "os";
 import mongoConnect from "./services/mongoConnect.js";
 import ioController from "./controllers/ioController.js";
 
+/*///////////////////////////////////////////////////////////////////////////////////////////////
+Users and Messages working with factory, Daos and Dtos...
+Pending:
+implement storage of products
+implement repository pattern for message and product persistences
+///////////////////////////////////////////////////////////////////////////////////////////////*/
+
 dotenv.config();
 
 const loggerConsole = logger.getLogger(`default`);
