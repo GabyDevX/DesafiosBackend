@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import * as mensajesModel from "../../models/mensaje.js";
-import { transformarADTO } from "../DTOs/mensajesDTO.js";
+import { transformarADTO } from "../DTOs/MensajesDTO.js";
 
 class MessagesDAOMongoDB {
   constructor(url) {
@@ -81,7 +81,6 @@ class MessagesDAOMongoDB {
       this.connect();
 
       const mensajes = await mensajesModel.mensajes.find({}, { __v: 0 }).lean();
-      console.log(mensajes);
       return mensajes;
     } catch (error) {
       console.log(error);

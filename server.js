@@ -12,10 +12,11 @@ import mongoConnect from "./services/mongoConnect.js";
 import ioController from "./controllers/ioController.js";
 
 /*///////////////////////////////////////////////////////////////////////////////////////////////
-Users and Messages working with factory, Daos and Dtos...
+Users and Messages working with factory, Daos and Dtos... 
+And already using Repository for messages
 Pending:
 implement storage of products
-implement repository pattern for message and product persistences
+implement repository pattern for product persistence
 ///////////////////////////////////////////////////////////////////////////////////////////////*/
 
 dotenv.config();

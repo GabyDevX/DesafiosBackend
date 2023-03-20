@@ -1,6 +1,9 @@
 import MensajesFactory from "../persistence/Factories/MensajesDAOFactory.js";
 import { normalizar } from "../utils/utils.js";
 import logger from "../logger/logger.js";
+import MensajesRepository from "../persistence/Repositories/MensajesRepository.js";
+
+const mensajesRepo = new MensajesRepository();
 
 const mensajeDB = MensajesFactory.getDao();
 
@@ -12,7 +15,8 @@ function startChatServer(app, io) {
 
     let mensajesBD;
     try {
-      mensajesBD = await mensajeDB.getAll();
+      mensajesBD = await mensajesRepo.getAll();
+      console.log(mensajesBD);
     } catch (err) {
       loggerConsole.error(`Error ${err}`);
       loggerArchiveError.error(`Error ${err}`);
@@ -43,9 +47,9 @@ function startChatServer(app, io) {
           fyh: data.fyh,
         };
 
-        await mensajeDB.save(nuevoMensaje);
+        await mensajesRepo.save(nuevoMensaje);
 
-        let msjs = await mensajeDB.getAll();
+        let msjs = await mensajesRepo.getAll();
 
         let normalizrReload = {
           id: "mensajes",

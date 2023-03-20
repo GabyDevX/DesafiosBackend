@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import * as usuariosModel from "../../models/usuario.js";
-import { transformarADTO } from "../DTOs/usuariosDTO.js";
+import { transformarADTO } from "../DTOs/UsuariosDTO.js";
 
 class UsuariosDAOMongoDB {
   constructor(url) {

@@ -76,7 +76,7 @@ socket.on("mensajes", (data) => {
     (mensajesNormSize * 100) / mensajesDeNormSize - 100
   }%`;
 
-  console.log(mensajesD.mensajes[0]);
+  console.log(mensajesD);
   const mensajesHTML = mensajesD.mensajes
     .map(
       (msj) =>

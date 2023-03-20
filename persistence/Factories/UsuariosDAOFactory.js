@@ -1,4 +1,4 @@
-import usuarioDAO from "../DAOs/usuariosDAO.js";
+import usuarioDAO from "../DAOs/UsuariosDAO.js";
 import dotenv from "dotenv";
 
 dotenv.config();
