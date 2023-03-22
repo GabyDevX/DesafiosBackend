@@ -4,6 +4,7 @@ import service from "../services/datos.js";
 const apiProductos = new ApiProductosMock();
 
 const datos = async (req, res) => {
+  //Crear ProductosFaker
   const productosFaker = await apiProductos.popular();
 
   //Sacar a service

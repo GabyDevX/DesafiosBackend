@@ -1,4 +1,4 @@
-import ProductosDaoFactory from "../Factories/ProductossDaoFactory.js";
+import ProductosDaoFactory from "../Factories/ProductosDaoFactory.js";
 import { transformarADTO } from "../DTOs/ProductosDTO.js";
 import ProductoRepo from "../../models/ProductoRepo.js";
 
@@ -11,17 +11,16 @@ export default class ProductosRepository {
 
   async getAll() {
     const productos = await this.dao.getAll();
-    return productos.map((p) => new ProductoRepo(p));
+    return productos.map((p) => p);
   }
 
   async getById(id) {
     const producto = await this.dao.getById(id);
-    return new ProductoRepo(producto);
+    return producto;
   }
 
   async save(nuevo) {
-    await this.dao.save(transformarADTO(nuevo));
-    return nuevo;
+    return await this.dao.save(transformarADTO(nuevo));
   }
 
   async updateById(id, nuevo) {

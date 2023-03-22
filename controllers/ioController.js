@@ -1,11 +1,8 @@
-import MensajesFactory from "../persistence/Factories/MensajesDAOFactory.js";
 import { normalizar } from "../utils/utils.js";
 import logger from "../logger/logger.js";
 import MensajesRepository from "../persistence/Repositories/MensajesRepository.js";
 
 const mensajesRepo = new MensajesRepository();
-
-const mensajeDB = MensajesFactory.getDao();
 
 const loggerArchiveError = logger.getLogger(`errorArchive`);
 

@@ -6,6 +6,7 @@ import infoRouter from "./info.js";
 import loginRouter from "./login.js";
 import logoutRouter from "./logout.js";
 import randomsRouter from "./randoms.js";
+import productosRouter from "./productos.js";
 import registerRouter from "./register.js";
 //import index controller;
 import controller from "../controllers/index.js";
@@ -20,6 +21,7 @@ router.use("/", infoRouter);
 router.use("/", loginRouter);
 router.use("/", logoutRouter);
 router.use("/", registerRouter);
+router.use("/api", productosRouter);
 router.use("/api", randomsRouter);
 
 export default router;

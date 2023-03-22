@@ -64,7 +64,7 @@ export default class ProductoRepo {
   set image(image) {
     console.log(image);
     if (!image) throw new Error('"image" es un campo requerido');
-    this.#image = image;
+    this.#image = String(image);
   }
 
   get stock() {

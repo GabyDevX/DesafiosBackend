@@ -21,8 +21,7 @@ class ProductsDAOMongoDB {
     try {
       await this.connect();
 
-      const producto = await productosModel.productos.find({ _id: id });
-
+      const producto = await productosModel.productos.findOne({ _id: id });
       return transformarADTO(producto);
     } catch (error) {
       console.log(error);
