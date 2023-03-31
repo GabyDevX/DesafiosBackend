@@ -54,7 +54,7 @@ class ProductsDAOMongoDB {
       );
 
       console.log(producto);
-      return transformarADTO(producto);
+      return producto;
     } catch (error) {
       console.log(error);
     }

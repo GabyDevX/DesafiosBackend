@@ -4,3 +4,6 @@
 [2023-03-22T11:42:24.088] [WARN] warnArchive - Estado: 404, Ruta consultada: /apiIproductos, Metodo POST
 [2023-03-22T11:42:38.583] [WARN] warnArchive - Estado: 404, Ruta consultada: /api/productos, Metodo POST
 [2023-03-22T12:32:47.922] [WARN] warnArchive - Estado: 404, Ruta consultada: /api/productos/641b1ebfe8ca6b4df60307d8, Metodo POST
+[2023-03-31T11:07:24.143] [WARN] warnArchive - Estado: 404, Ruta consultada: /favicon.ico, Metodo GET
+[2023-03-31T12:17:01.495] [WARN] warnArchive - Estado: 404, Ruta consultada: /unfetch.umd.js.map, Metodo GET
+[2023-03-31T12:17:01.498] [WARN] warnArchive - Estado: 404, Ruta consultada: /graphiql.min.js.map, Metodo GET

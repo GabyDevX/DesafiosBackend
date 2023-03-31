@@ -25,7 +25,7 @@ export default class ProductosRepository {
 
   async updateById(id, nuevo) {
     const producto = await this.dao.updateById(id, nuevo);
-    return new ProductoRepo(producto);
+    return producto;
   }
 
   async deleteById(id) {
