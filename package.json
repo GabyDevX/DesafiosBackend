@@ -1,7 +1,6 @@
 {
   "name": "desafios",
   "version": "1.0.0",
-  "description": "",
   "type": "module",
   "main": "benchmark.js",
   "scripts": {
@@ -36,5 +35,18 @@
     "passport-local": "^1.0.0",
     "socket.io": "^4.5.4",
     "sqlite3": "^5.1.4"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GabyDevX/DesafiosBackend.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/GabyDevX/DesafiosBackend/issues"
+  },
+  "homepage": "https://github.com/GabyDevX/DesafiosBackend#readme",
+  "description": ""
 }

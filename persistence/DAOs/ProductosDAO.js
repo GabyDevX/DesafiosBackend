@@ -1,92 +1,92 @@
-import mongoose from "mongoose";
-import * as productosModel from "../../models/producto.js";
-import { transformarADTO } from "../DTOs/ProductosDTO.js";
+import mongoose from 'mongoose'
+import * as productosModel from '../../models/producto.js'
+import { transformarADTO } from '../DTOs/ProductosDTO.js'
 
 class ProductsDAOMongoDB {
   constructor(url) {
-    this.url = url;
+    this.url = url
   }
 
   async connect() {
     try {
       await mongoose.connect(this.url, {
         useNewUrlParser: true,
-      });
+      })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async getById(id) {
     try {
-      await this.connect();
+      await this.connect()
 
-      const producto = await productosModel.productos.findOne({ _id: id });
-      return transformarADTO(producto);
+      const producto = await productosModel.productos.findOne({ _id: id })
+      return transformarADTO(producto)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async deleteById(id) {
     try {
-      await this.connect();
+      await this.connect()
 
-      const producto = await productosModel.productos.deleteOne({ _id: id });
+      const producto = await productosModel.productos.deleteOne({ _id: id })
 
-      console.log(producto);
+      console.log(producto)
 
-      return transformarADTO(producto);
+      return transformarADTO(producto)
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async updateById(id, newData) {
     try {
-      await this.connect();
+      await this.connect()
 
       const producto = await productosModel.productos.updateOne(
         { _id: id },
         {
           $set: { ...newData },
-        }
-      );
+        },
+      )
 
-      console.log(producto);
-      return producto;
+      console.log(producto)
+      return producto
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async save(object) {
     try {
-      await this.connect();
+      await this.connect()
 
-      const producto = new productosModel.productos(object);
+      const producto = new productosModel.productos(object)
 
-      const saved = await producto.save();
+      const saved = await producto.save()
 
-      console.log(saved._id);
-      return saved._id;
+      console.log(saved.id)
+      return saved.id
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   async getAll() {
     try {
-      await this.connect();
+      await this.connect()
 
       const productos = await productosModel.productos
         .find({}, { __v: 0 })
-        .lean();
-      return productos;
+        .lean()
+      return productos
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 }
 
-export default { ProductsDAOMongoDB };
+export default { ProductsDAOMongoDB }
