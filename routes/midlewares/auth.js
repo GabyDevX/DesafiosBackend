@@ -6,6 +6,7 @@ import bCrypt from "bcrypt";
 import MongoStore from "connect-mongo";
 import dotenv from "dotenv";
 import UsuariosFactory from "../../persistence/Factories/UsuariosDAOFactory.js";
+import notification from "../../controllers/notificationController.js"
 
 const router = Router();
 
@@ -39,6 +40,8 @@ passport.use(
                 .save(newUser)
                 .then((savedUser) => {
                   done(null, savedUser);
+                  notification.sendMailRegister(newUser)
+
                 })
                 .catch((error) => {
                   console.log("Error in SignUp: " + error);
