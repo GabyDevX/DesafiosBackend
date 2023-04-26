@@ -1,13 +1,10 @@
 import mongoose from "mongoose";
-import * as mensajesModel from "../../models/mensaje.js";
-import * as usuariosModel from "../../models/usuario.js";
 import * as modelProd from "../../models/producto.js";
-import * as modelCar from "../../models/carrito.js";
+import * as carritosModel from "../../models/carrito.js";
 
-class Mongo {
-  constructor(url, type) {
+class CartsDAOMongoDB {
+  constructor(url) {
     this.url = url;
-    this.type = type;
   }
 
   async connect() {
@@ -20,24 +17,13 @@ class Mongo {
     }
   }
 
-  async getById(id, type = this.type) {
+  async getById(id) {
     try {
       this.connect();
 
-      if (type == "producto") {
-        const product = await modelProd.productos.find({ _id: id });
-        return product;
-      } else if (type == "carrito") {
-        const cart = await modelCar.carritos.find({ _id: id });
-        console.log(cart);
-        return cart;
-      } else if (type == "mensajes") {
-        const mensaje = await mensajesModel.mensajes.find({ _id: id });
-        return mensaje;
-      } else if (type == "usuarios") {
-        const usuario = await usuariosModel.usuarios.find({ _id: id });
-        return usuario;
-      }
+      const cart = await carritosModel.carritos.find({ _id: id });
+      console.log(cart);
+      return cart;
     } catch (error) {
       console.log(error);
     }
@@ -47,19 +33,9 @@ class Mongo {
     try {
       this.connect();
 
-      if (this.type == "producto") {
-        const product = await modelProd.productos.deleteOne({ _id: id });
-        return product;
-      } else if (this.type == "carrito") {
-        const cart = await modelCar.carritos.deleteOne({ _id: id });
-        return cart;
-      } else if (this.type == "mensajes") {
-        const mensaje = await mensajesModel.mensajes.deleteOne({ _id: id });
-        return mensaje;
-      } else if (this.type == "usuarios") {
-        const usuario = await usuariosModel.usuarios.deleteOne({ _id: id });
-        return usuario;
-      }
+      const cart = await carritosModel.carritos.deleteOne({ _id: id });
+      return cart;
+      
     } catch (error) {
       console.log(error);
     }
@@ -69,41 +45,15 @@ class Mongo {
     try {
       this.connect();
 
-      if (this.type == "producto") {
-        const product = await modelProd.productos.updateOne(
-          { _id: id },
-          {
-            $set: { ...newData },
-          }
-        );
+      const cart = await carritosModel.carritos.updateOne(
+        { _id: id },
+        {
+          $set: { ...newData },
+        }
+      );
 
-        return product;
-      } else if (this.type == "carrito") {
-        const cart = await modelCar.carritos.updateOne(
-          { _id: id },
-          {
-            $set: { ...newData },
-          }
-        );
+      return cart;
 
-        return cart;
-      } else if (this.type == "mensajes") {
-        const mensaje = await mensajesModel.mensajes.updateOne(
-          { _id: id },
-          {
-            $set: { ...newData },
-          }
-        );
-        return mensaje;
-      } else if (this.type == "usuarios") {
-        const usuario = await usuariosModel.usuarios.updateOne(
-          { _id: id },
-          {
-            $set: { ...newData },
-          }
-        );
-        return mensaje;
-      }
     } catch (error) {
       console.log(error);
     }
@@ -113,13 +63,13 @@ class Mongo {
     try {
       this.connect();
 
-      const carrito = await modelCar.carritos.findOne({ _id: id });
+      const carrito = await carritosModel.carritos.findOne({ _id: id });
 
       const product = await modelProd.productos.findOne({ _id: objectToAddId });
 
       carrito.products.push(JSON.parse(JSON.stringify(product)));
 
-      const updated = await modelCar.carritos.updateOne(
+      const updated = await carritosModel.carritos.updateOne(
         { _id: id },
         {
           $set: { ...carrito },
@@ -132,8 +82,8 @@ class Mongo {
     }
   }
 
-  async removeFromArrayById(id, objectToRemoveId, keyName) {
-    const carrito = await modelCar.carritos.findOne({ _id: id });
+  async removeFromArrayById(id, objectToRemoveId) {
+    const carrito = await carritosModel.carritos.findOne({ _id: id });
 
     console.log(carrito.products);
 
@@ -143,7 +93,7 @@ class Mongo {
 
     console.log(carrito.products);
 
-    const updated = await modelCar.carritos.updateOne(
+    const updated = await carritosModel.carritos.updateOne(
       { _id: id },
       {
         $set: { ...carrito },
@@ -157,33 +107,12 @@ class Mongo {
     try {
       this.connect();
 
-      if (this.type == "producto") {
-        const saveProduct = new modelProd.productos(object);
+      const saveCart = new carritosModel.carritos(object);
 
-        const saved = await saveProduct.save();
+      const saved = await saveCart.save();
 
-        console.log(saved._id);
-        return saved._id;
-      } else if (this.type == "carrito") {
-        const saveCart = new modelCar.carritos(object);
-
-        const saved = await saveCart.save();
-
-        console.log(saved._id);
-        return saved._id;
-      } else if (this.type == "mensajes") {
-        const mensaje = new mensajesModel.mensajes(object);
-        const saved = await mensaje.save();
-
-        console.log(saved._id);
-        return saved._id;
-      } else if (this.type == "usuarios") {
-        const usuario = new usuariosModel.usuarios(object);
-        const saved = await usuario.save();
-
-        console.log(saved._id);
-        return saved._id;
-      }
+      console.log(saved._id);
+      return saved._id;
     } catch (error) {
       console.log(error);
     }
@@ -192,28 +121,12 @@ class Mongo {
   async getAll() {
     try {
       this.connect();
-
-      if (this.type == "producto") {
-        const product = await modelProd.productos.find({}, { __v: 0 }).lean();
-        return product;
-      } else if (this.type == "carrito") {
-        const cart = await modelCar.carritos.find({}, { __v: 0 }).lean();
-        return cart;
-      } else if (this.type == "mensajes") {
-        const mensaje = await mensajesModel.mensajes
-          .find({}, { __v: 0 })
-          .lean();
-        return mensaje;
-      } else if (this.type == "usuarios") {
-        const usuario = await await usuariosModel.usuarios
-          .find({}, { __v: 0 })
-          .lean();
-        return usuario;
-      }
+      const carts = await carritosModel.carritos.find({}, { __v: 0 }).lean();
+      return carts;
     } catch (error) {
       console.log(error);
     }
   }
 }
 
-export const MongoDB = Mongo;
+export default { CartsDAOMongoDB }

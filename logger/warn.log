@@ -13,3 +13,5 @@
 [2023-04-23T23:59:08.320] [WARN] warnArchive - Estado: 404, Ruta consultada: /api/carrito, Metodo POST
 [2023-04-24T00:01:08.595] [WARN] warnArchive - Estado: 404, Ruta consultada: /api/carrito/6445f0af5febb49c0a72e973/productos/641cd9114840cf449d6fcabd, Metodo GET
 [2023-04-24T08:10:11.597] [WARN] warnArchive - Estado: 404, Ruta consultada: /favicon.ico, Metodo GET
+[2023-04-26T08:34:47.053] [WARN] warnArchive - Estado: 404, Ruta consultada: /favicon.ico, Metodo GET
+[2023-04-26T09:20:23.043] [WARN] warnArchive - Estado: 404, Ruta consultada: /favicon.ico, Metodo GET
