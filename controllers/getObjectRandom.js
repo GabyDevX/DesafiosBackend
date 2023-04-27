@@ -25,7 +25,6 @@ const getObject = () => {
     }
   }
 
-  //console.table(data)
   return data;
 };
 const objectAleatorio = getObject();

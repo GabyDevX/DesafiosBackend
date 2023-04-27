@@ -1,5 +1,4 @@
 import { Router } from "express";
-// Importar todos los routers;
 import authRouter from "./midlewares/auth.js";
 import datosRouter from "./datos.js";
 import infoRouter from "./info.js";
@@ -10,7 +9,6 @@ import productosRouter from "./productos.js";
 import carritosRouter from "./carritos.js"
 // import productosGraphQLRouter from "./productosGraphQL.js";
 import registerRouter from "./register.js";
-//import index controller;
 import controller from "../controllers/index.js";
 
 const router = Router();

@@ -12,7 +12,6 @@ export default class MensajesRepository {
   async getAll() {
     const mensajes = await this.dao.getAll();
     return mensajes;
-    // return mensajes.map((p) => new MensajeRepo(p));
   }
 
   async getById(id) {

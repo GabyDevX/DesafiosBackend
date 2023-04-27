@@ -1,9 +1,4 @@
 import notification from "./notificationController.js"
-// import { MongoDB } from "../persistence/DAOs/CarritosDAO.js";
-// const db = new MongoDB(
-//   "mongodb+srv://coderhouse:coderhouse@cluster0.6zhqh8c.mongodb.net/?retryWrites=true&w=majority",
-//   "carrito"
-// );
 
 import CarritosRepository from "../persistence/Repositories/CarritosRepository.js";
 const carritosRepo = new CarritosRepository();
