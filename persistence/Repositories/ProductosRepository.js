@@ -1,4 +1,4 @@
-import ProductosDaoFactory from '../Factories/ProductosDaoFactory.js'
+import ProductosDaoFactory from '../Factories/ProductosDAOFactory.js'
 import { transformarADTO } from '../DTOs/ProductosDTO.js'
 import ProductoRepo from '../../models/ProductoRepo.js'
 
