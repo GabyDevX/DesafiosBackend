@@ -1,6 +1,6 @@
 import CarritosDAOFactory from '../Factories/CarritosDAOFactory.js'
-// import { transformarADTO } from '../DTOs/carritosDTO.js'
-// import carritoRepo from '../../models/carritoRepo.js'
+import { transformarADTO } from '../DTOs/CarritosDTO.js'
+import carritoRepo from '../../models/CarritoRepo.js'
 
 export default class CarritosRepository {
   dao
@@ -11,8 +11,7 @@ export default class CarritosRepository {
 
   async getAll() {
     const carritos = await this.dao.getAll()
-    // return carritos.map((p) => transformarADTO(p))
-    return carritos
+    return carritos.map((p) => transformarADTO(p))
   }
 
   async getById(id) {
@@ -21,8 +20,7 @@ export default class CarritosRepository {
   }
 
   async save(nuevo) {
-    // return await this.dao.save(transformarADTO(nuevo))
-    return await this.dao.save(nuevo)
+    return await this.dao.save(transformarADTO(nuevo))
   }
 
   async updateById(id, nuevo) {
@@ -32,8 +30,7 @@ export default class CarritosRepository {
 
   async deleteById(id) {
     const carrito = await this.dao.deleteById(id)
-    // return new carritoRepo(carrito)
-    return carrito
+    return new carritoRepo(carrito)
   }
 
   async addToArrayById(id, objectToAddId) {
